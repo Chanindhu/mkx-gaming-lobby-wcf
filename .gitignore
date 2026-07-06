@@ -1,0 +1,36 @@
+# Visual Studio
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Build output
+bin/
+obj/
+Debug/
+Release/
+x64/
+x86/
+[Bb]uild/
+
+# NuGet
+packages/
+*.nupkg
+.nuget/
+
+# Logs and temporary files
+*.log
+*.tmp
+*.cache
+TestResults/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Assignment/submission artifacts
+*Declaration*.pdf
+*Originality*.pdf
+*Assignment*.pdf
+*Report*.pdf

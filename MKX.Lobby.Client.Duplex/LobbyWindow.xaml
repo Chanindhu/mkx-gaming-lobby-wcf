@@ -1,0 +1,229 @@
+<Window x:Class="MKX.Lobby.Client.Duplex.LobbyWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Lobby (Duplex)"
+        Height="520" Width="880"
+        WindowStartupLocation="CenterScreen"
+        Background="Black">
+
+    <!-- ===== Global resources (styles/templates) ===== -->
+    <Window.Resources>
+        <!-- Accent color -->
+        <SolidColorBrush x:Key="Accent" Color="#E4B900"/>
+
+        <!-- Button style -->
+        <Style TargetType="Button">
+            <Setter Property="Foreground" Value="Black"/>
+            <Setter Property="Padding" Value="12,8"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Background" Value="{StaticResource Accent}"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border CornerRadius="10" Background="{TemplateBinding Background}">
+                            <Border.Effect>
+                                <DropShadowEffect Color="#66000000" BlurRadius="10" ShadowDepth="2"/>
+                            </Border.Effect>
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#FFF0CB20"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter Property="Background" Value="#FFD8B800"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="Opacity" Value="0.6"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- TextBox style -->
+        <Style TargetType="TextBox">
+            <Setter Property="Background" Value="#1E1E1E"/>
+            <Setter Property="Foreground" Value="#F0F0F0"/>
+            <Setter Property="BorderBrush" Value="#404040"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="8,6"/>
+        </Style>
+
+        <!-- Card style -->
+        <Style x:Key="Card" TargetType="Border">
+            <Setter Property="CornerRadius" Value="14"/>
+            <Setter Property="Background" Value="#CC181818"/>
+            <Setter Property="Padding" Value="16"/>
+            <Setter Property="SnapsToDevicePixels" Value="True"/>
+            <Setter Property="Effect">
+                <Setter.Value>
+                    <DropShadowEffect Color="#99000000" BlurRadius="20" ShadowDepth="4"/>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- ListBoxItem with highlight on selection (no clipping) -->
+        <Style TargetType="ListBoxItem">
+            <Setter Property="Margin" Value="6,4"/>
+            <Setter Property="Padding" Value="8"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="#F0F0F0"/>
+            <Setter Property="SnapsToDevicePixels" Value="True"/>
+            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ListBoxItem">
+                        <Border x:Name="bd"
+                                CornerRadius="10"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{StaticResource Accent}"
+                                BorderThickness="0"
+                                Padding="{TemplateBinding Padding}"
+                                RenderTransformOrigin="0.5,0.5">
+                            <Border.RenderTransform>
+                                <ScaleTransform x:Name="scale" ScaleX="1" ScaleY="1"/>
+                            </Border.RenderTransform>
+                            <ContentPresenter/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="bd" Property="Background" Value="#22111111"/>
+                            </Trigger>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter TargetName="bd" Property="Background" Value="#442D2D2D"/>
+                                <Setter TargetName="bd" Property="BorderThickness" Value="2"/>
+                                <Trigger.EnterActions>
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <DoubleAnimation Storyboard.TargetName="scale"
+                                                             Storyboard.TargetProperty="ScaleX"
+                                                             To="1.02" Duration="0:0:0.10"/>
+                                            <DoubleAnimation Storyboard.TargetName="scale"
+                                                             Storyboard.TargetProperty="ScaleY"
+                                                             To="1.02" Duration="0:0:0.10"/>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </Trigger.EnterActions>
+                                <Trigger.ExitActions>
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <DoubleAnimation Storyboard.TargetName="scale"
+                                                             Storyboard.TargetProperty="ScaleX"
+                                                             To="1.00" Duration="0:0:0.10"/>
+                                            <DoubleAnimation Storyboard.TargetName="scale"
+                                                             Storyboard.TargetProperty="ScaleY"
+                                                             To="1.00" Duration="0:0:0.10"/>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </Trigger.ExitActions>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Room item template -->
+        <DataTemplate x:Key="RoomTemplate">
+            <DockPanel LastChildFill="True" Margin="0,2">
+                <Border Background="{StaticResource Accent}" CornerRadius="10" Padding="6,2" Margin="0,0,8,0" DockPanel.Dock="Right">
+                    <TextBlock Text="{Binding PlayerCount}" Foreground="Black" FontWeight="Bold"/>
+                </Border>
+                <TextBlock Text="{Binding Name}" Foreground="White" FontSize="15" FontWeight="SemiBold"/>
+            </DockPanel>
+        </DataTemplate>
+    </Window.Resources>
+
+    <Grid>
+        <!-- Background -->
+        <Grid.Background>
+            <ImageBrush ImageSource="/Assets/Lobby.png" Stretch="UniformToFill"/>
+        </Grid.Background>
+
+        <!-- Overlay -->
+        <Rectangle>
+            <Rectangle.Fill>
+                <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                    <GradientStop Color="#80000000" Offset="0"/>
+                    <GradientStop Color="#99000000" Offset="1"/>
+                </LinearGradientBrush>
+            </Rectangle.Fill>
+        </Rectangle>
+
+        <!-- Foreground layout -->
+        <Grid Margin="24">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="3*"/>
+                <ColumnDefinition Width="2*"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- Header with Logout on right -->
+            <DockPanel Grid.Row="0" Grid.ColumnSpan="2" LastChildFill="False" Margin="0,0,0,12">
+                <TextBlock Text="MKX Lobby" Foreground="White" FontSize="28" FontWeight="Bold"
+                           DockPanel.Dock="Left" />
+                <StackPanel Orientation="Horizontal" DockPanel.Dock="Right">
+                    <Button Content="Logout" Width="110" Height="34" Margin="0,0,10,0" Click="Logout_Click"/>
+                    <TextBlock x:Name="UserLabel" Foreground="#E0E0E0" FontSize="14" VerticalAlignment="Center"/>
+                </StackPanel>
+            </DockPanel>
+
+            <!-- Rooms card (left) -->
+            <Border Grid.Row="1" Grid.Column="0" Style="{StaticResource Card}">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Text="Available Rooms" Foreground="White" FontSize="16" FontWeight="Bold" />
+
+                    <!-- Search -->
+                    <DockPanel Grid.Row="1" Margin="0,10,0,10" LastChildFill="True">
+                        <TextBox x:Name="SearchBox"
+                                 Height="32"
+                                 ToolTip="Search rooms..."
+                                 TextChanged="SearchBox_TextChanged"/>
+                    </DockPanel>
+
+                    <!-- Rooms list -->
+                    <ListBox x:Name="RoomsList"
+                             Grid.Row="2"
+                             BorderThickness="0"
+                             Background="#14000000"
+                             Padding="4"
+                             ScrollViewer.VerticalScrollBarVisibility="Auto"
+                             ScrollViewer.CanContentScroll="False"
+                             ItemTemplate="{StaticResource RoomTemplate}"/>
+                </Grid>
+            </Border>
+
+            <!-- Actions card (right) -->
+            <Border Grid.Row="1" Grid.Column="1" Style="{StaticResource Card}">
+                <StackPanel>
+                    <TextBlock Text="Create / Join" Foreground="White" FontSize="16" FontWeight="Bold"/>
+
+                    <TextBlock Text="Room name" Foreground="#E0E0E0" Margin="0,10,0,4"/>
+                    <TextBox x:Name="NewRoomBox" Height="32"/>
+
+                    <StackPanel Orientation="Horizontal" Margin="0,14,0,0">
+                        <Button Content="Create" Width="120" Height="38" Click="Create_Click"/>
+                        <Button Content="Join Selected" Width="150" Height="38" Margin="12,0,0,0" Click="Join_Click"/>
+                    </StackPanel>
+
+                    <TextBlock Foreground="#A0A0A0" Margin="0,10,0,0" TextWrapping="Wrap">
+                        Tip: Select a room from the list or type a new name, then click
+                        <Run Text="Create"/> or <Run Text="Join Selected"/>.
+                    </TextBlock>
+                </StackPanel>
+            </Border>
+        </Grid>
+    </Grid>
+</Window>
