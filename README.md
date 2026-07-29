@@ -4,6 +4,12 @@ A desktop online gaming lobby prototype built with **C#**, **.NET Framework 4.8*
 
 The system demonstrates a lobby server, a polling-based WPF client, and a duplex WCF client that receives real-time server-pushed updates.
 
+## Reviewer Quick Scan
+
+- **What it demonstrates:** distributed .NET desktop architecture, WCF service contracts, polling clients, duplex callbacks, chat, rooms, and file-sharing workflows.
+- **Best files to inspect first:** [`MKX.Lobby.Contracts/Contracts.cs`](MKX.Lobby.Contracts/Contracts.cs), [`MKX.Lobby.Server/LobbyService.cs`](MKX.Lobby.Server/LobbyService.cs), and [`MKX.Lobby.Client.Duplex/DuplexCallback.cs`](MKX.Lobby.Client.Duplex/DuplexCallback.cs).
+- **How to verify it:** open the solution in Visual Studio, start the server host, then run multiple client projects to test room, chat, private message, and file-transfer flows.
+
 ## Features
 
 - Unique username login and logout
@@ -15,6 +21,18 @@ The system demonstrates a lobby server, a polling-based WPF client, and a duplex
 - Polling client using timed background update retrieval
 - Duplex client using WCF callback channels over `netTcpBinding`
 - Multi-project Visual Studio solution separating contracts, server, business proxy, host, and clients
+
+## Proof and Review Evidence
+
+| Evidence | Where to inspect it | What it proves |
+|---|---|---|
+| WCF service contract | [`MKX.Lobby.Contracts/Contracts.cs`](MKX.Lobby.Contracts/Contracts.cs) | The lobby, callback, DTO, room, message, and file-sharing contracts are explicit. |
+| Lobby service implementation | [`MKX.Lobby.Server/LobbyService.cs`](MKX.Lobby.Server/LobbyService.cs) | The server-side room, chat, private messaging, and file-transfer behavior is implemented. |
+| Server host | [`MKX.Lobby.Server.Host/Program.cs`](MKX.Lobby.Server.Host/Program.cs) | The WCF endpoints are hosted as a runnable console service. |
+| Polling client | [`MKX.Lobby.Client.Polling/LobbyWindow.xaml.cs`](MKX.Lobby.Client.Polling/LobbyWindow.xaml.cs) | One client path demonstrates timed refresh/polling behavior. |
+| Duplex callback client | [`MKX.Lobby.Client.Duplex/DuplexCallback.cs`](MKX.Lobby.Client.Duplex/DuplexCallback.cs) | The second client path demonstrates server-pushed updates through callbacks. |
+| Architecture notes | [`docs/architecture-notes.md`](docs/architecture-notes.md) | The solution structure and communication responsibilities are documented. |
+| Build/run notes | [`docs/build-and-run.md`](docs/build-and-run.md) | A Windows reviewer can reproduce the project locally. |
 
 ## Project Structure
 
