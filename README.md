@@ -37,14 +37,19 @@ The system demonstrates a lobby server, a polling-based WPF client, and a duplex
 ## Project Structure
 
 ```text
-MKX.Lobby.sln
-MKX.Lobby.Contracts/         WCF contracts and data transfer models
-MKX.Lobby.Server/            Core lobby service and in-memory room state
-MKX.Lobby.Business/          Business/proxy service layer
-MKX.Lobby.Server.Host/       Console host for the WCF services
-MKX.Lobby.Client.Polling/    WPF client using background polling
-MKX.Lobby.Client.Duplex/     WPF client using duplex WCF callbacks
-docs/                        Architecture and run notes
+mkx-gaming-lobby-wcf/
+|-- MKX.Lobby.sln
+|-- MKX.Lobby.Contracts/                      # WCF contracts and shared DTO models
+|-- MKX.Lobby.Server/                         # Core lobby service and in-memory room state
+|-- MKX.Lobby.Business/                       # Business/proxy service layer
+|-- MKX.Lobby.Server.Host/                    # Console host for WCF services
+|-- MKX.Lobby.Client.Polling/                 # WPF client using background polling
+|-- MKX.Lobby.Client.Duplex/                  # WPF client using duplex WCF callbacks
+|-- docs/
+|   |-- architecture-notes.md
+|   `-- build-and-run.md
+|-- .gitignore
+`-- README.md
 ```
 
 ## Tech Stack
